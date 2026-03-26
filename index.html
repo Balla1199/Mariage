@@ -49,17 +49,21 @@
       transition: opacity 0.9s ease, transform 0.9s ease, visibility 0s linear 0s;
     }
 
+    .first-page {
+      padding: 0;
+    }
+
     .split-envelope {
       position: relative;
-      width: min(92vw, 560px);
-      aspect-ratio: 1.22 / 1;
+      width: 100vw;
+      height: 100vh;
       border: 0;
       padding: 0;
       background: transparent;
       cursor: pointer;
-      border-radius: 10px;
+      border-radius: 0;
       overflow: hidden;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42);
+      box-shadow: none;
     }
 
     .panel {
@@ -283,9 +287,14 @@
         padding: 12px;
       }
 
+      .first-page {
+        padding: 0;
+      }
+
       .split-envelope {
-        width: min(94vw, 420px);
-        border-radius: 8px;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
       }
 
       .second-page {
