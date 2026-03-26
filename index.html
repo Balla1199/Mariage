@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premiere page - Enveloppe</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      background: #050505;
+      font-family: "Georgia", "Times New Roman", serif;
+      overflow: hidden;
+    }
+
+    .video-invitation {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px 18px;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: scale(1.01);
+      transition: opacity 0.9s ease, transform 0.9s ease, visibility 0s linear 0.9s;
+    }
+
+    .scene.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: scale(1);
+      transition: opacity 0.9s ease, transform 0.9s ease, visibility 0s linear 0s;
+    }
+
+    .split-envelope {
+      position: relative;
+      width: min(92vw, 560px);
+      aspect-ratio: 1.22 / 1;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42);
+    }
+
+    .panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background-image: url("enveloppe.jpeg");
+      background-size: 100% 200%;
+      background-repeat: no-repeat;
+      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
+      will-change: transform, opacity;
+    }
+
+    .panel-left {
+      top: 0;
+      background-position: center top;
+    }
+
+    .panel-right {
+      bottom: 0;
+      background-position: center bottom;
+    }
+
+    .split-envelope.opened .panel-left {
+      transform: translateY(-108%) rotateX(10deg);
+      opacity: 0;
+    }
+
+    .split-envelope.opened .panel-right {
+      transform: translateY(108%) rotateX(-10deg);
+      opacity: 0;
+    }
+
+    .envelope-image {
+      width: 100%;
+      max-width: 520px;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .second-page {
+      background: #c8a06a;
+      color: #ffffff;
+    }
+
+    .third-page {
+      background: #c8a06a;
+      color: #ffffff;
+    }
+
+    .fourth-page {
+      background: #c8a06a;
+      color: #ffffff;
+    }
+
+    .fifth-page {
+      background-color: #1f1a17;
+      background-image: url("bague1.jpg");
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: #ffffff;
+    }
+
+    .sixth-page {
+      background-color: #1f1a17;
+      background-image: url("lieu.jpg");
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: #ffffff;
+    }
+
+    .seventh-page {
+      background-color: #c8a06a;
+      background-image: none;
+      color: #ffffff;
+    }
+
+    .countdown-title {
+      margin: 0 0 16px;
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      line-height: 1.2;
+    }
+
+    .countdown {
+      margin: 0 0 16px;
+      font-size: clamp(1.3rem, 3.6vw, 2rem);
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    .romantic-text {
+      margin: 0;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      line-height: 1.5;
+      max-width: 760px;
+    }
+
+    .message {
+      max-width: 780px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .message h2 {
+      margin: 0 0 18px;
+      font-size: clamp(2rem, 5.2vw, 3.2rem);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .message p {
+      margin: 0;
+      font-size: clamp(1.1rem, 3.2vw, 1.6rem);
+      line-height: 1.45;
+    }
+
+    .fifth-title {
+      margin: 0 0 20px;
+      font-size: clamp(2rem, 5.2vw, 3rem);
+      font-weight: 500;
+      line-height: 1.2;
+      text-transform: lowercase;
+    }
+
+    .story-text {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: revealUp 0.9s ease forwards;
+    }
+
+    .story-text + .story-text {
+      margin-top: 12px;
+    }
+
+    .story-text.name {
+      font-size: clamp(2rem, 5.2vw, 3rem);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .story-text.subtitle {
+      font-size: clamp(1.2rem, 3.4vw, 1.8rem);
+      line-height: 1.4;
+      margin-top: 18px;
+    }
+
+    .reveal-page.active .story-text:nth-child(1) {
+      animation-delay: 0.15s;
+    }
+
+    .reveal-page.active .story-text:nth-child(2) {
+      animation-delay: 0.7s;
+    }
+
+    .reveal-page.active .story-text:nth-child(3) {
+      animation-delay: 1.25s;
+    }
+
+    .fade-black {
+      position: fixed;
+      inset: 0;
+      background: #000000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      z-index: 20;
+    }
+
+    .fade-black.show {
+      opacity: 1;
+    }
+
+    @keyframes revealUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .scene {
+        padding: 12px;
+      }
+
+      .split-envelope {
+        width: min(94vw, 420px);
+        border-radius: 8px;
+      }
+
+      .second-page {
+        padding: 20px 14px;
+      }
+
+      .third-page {
+        padding: 20px 14px;
+      }
+
+      .fourth-page {
+        padding: 20px 14px;
+      }
+
+      .fifth-page {
+        padding: 20px 14px;
+      }
+
+      .sixth-page {
+        padding: 20px 14px;
+      }
+
+      .seventh-page {
+        padding: 20px 14px;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="video-invitation" id="videoInvitation">
+    <main class="scene first-page active">
+      <button class="split-envelope" id="splitEnvelope" aria-label="Ouvrir l'enveloppe">
+        <span class="panel panel-left" aria-hidden="true"></span>
+        <span class="panel panel-right" aria-hidden="true"></span>
+      </button>
+    </main>
+
+    <section class="scene second-page">
+      <div class="message">
+        <h2>Le grand jour approche....</h2>
+        <p>ET nous serions honorés de le partager avec vous</p>
+      </div>
+    </section>
+
+    <section class="scene third-page reveal-page">
+      <div class="message">
+        <p class="story-text name">Balla Coulibaly</p>
+        <p class="story-text name">Aminata Maiga</p>
+        <p class="story-text subtitle">Une histoire ecrite à deux...</p>
+      </div>
+    </section>
+
+    <section class="scene fourth-page reveal-page">
+      <div class="message">
+        <p class="story-text name">Notez cette date</p>
+        <p class="story-text name">Dimanche 12 AVRIL 2026</p>
+        <p class="story-text subtitle">Un jour qui sera gravé</p>
+      </div>
+    </section>
+
+    <section class="scene fifth-page">
+      <div class="message">
+        <h2 class="fifth-title">pour toujours</h2>
+      </div>
+    </section>
+
+    <section class="scene sixth-page">
+      <div class="message">
+        <p class="story-text name">Siracoro Meguetana</p>
+        <p class="story-text subtitle">&</p>
+        <p class="story-text name">Tabacoro ATTbougou</p>
+      </div>
+    </section>
+
+    <section class="scene seventh-page">
+      <div class="message">
+        <h2 class="countdown-title">L'attente touche à sa fin</h2>
+        <p class="countdown" id="countdownTimer">Chargement du compte à rebours...</p>
+        <p class="romantic-text">Chaque seconde qui passe nous rapproche d'un oui éternel, d'un moment magique et d'un amour célébré pour la vie.</p>
+      </div>
+    </section>
+  </div>
+  <div class="fade-black" id="fadeBlack" aria-hidden="true"></div>
+  <video id="bgMusic" src="music.mp4" preload="auto" loop playsinline style="display:none"></video>
+
+  <script>
+    (function () {
+      var scenes = document.querySelectorAll(".video-invitation .scene");
+      var fade = document.getElementById("fadeBlack");
+      var splitEnvelope = document.getElementById("splitEnvelope");
+      var bgMusic = document.getElementById("bgMusic");
+      if (!scenes.length || !fade || !splitEnvelope) return;
+
+      var current = 0;
+      var sceneDuration = 3000;
+      var halfFade = 600;
+      var isStarted = false;
+      var hasStartedMusic = false;
+      var countdownEl = document.getElementById("countdownTimer");
+      var autoTimer = null;
+
+      function restartReveal(scene) {
+        if (!scene.classList.contains("reveal-page")) return;
+        var texts = scene.querySelectorAll(".story-text");
+        texts.forEach(function (text) {
+          text.style.animation = "none";
+          text.offsetHeight;
+          text.style.animation = "";
+        });
+      }
+
+      function nextScene() {
+        if (current >= scenes.length - 1) {
+          if (autoTimer) {
+            clearInterval(autoTimer);
+            autoTimer = null;
+          }
+          return;
+        }
+
+        fade.classList.add("show");
+
+        setTimeout(function () {
+          scenes[current].classList.remove("active");
+          current = current + 1;
+          if (current >= scenes.length) {
+            current = 1;
+          }
+          scenes[current].classList.add("active");
+          restartReveal(scenes[current]);
+
+          if (current >= scenes.length - 1 && autoTimer) {
+            clearInterval(autoTimer);
+            autoTimer = null;
+          }
+        }, halfFade);
+
+        setTimeout(function () {
+          fade.classList.remove("show");
+
+          if (!hasStartedMusic && bgMusic) {
+            hasStartedMusic = true;
+            bgMusic.play().catch(function () {
+              hasStartedMusic = false;
+            });
+          }
+        }, halfFade * 2);
+      }
+
+      function startAutoTransitions() {
+        if (isStarted) return;
+        isStarted = true;
+
+        setTimeout(function () {
+          nextScene();
+          autoTimer = setInterval(nextScene, sceneDuration);
+        }, 1200);
+      }
+
+      function updateCountdown() {
+        if (!countdownEl) return;
+        var target = new Date("2026-04-12T00:00:00");
+        var now = new Date();
+        var diff = target.getTime() - now.getTime();
+
+        if (diff <= 0) {
+          countdownEl.textContent = "C'est aujourd'hui.";
+          return;
+        }
+
+        var second = 1000;
+        var minute = second * 60;
+        var hour = minute * 60;
+        var day = hour * 24;
+
+        var days = Math.floor(diff / day);
+        diff -= days * day;
+        var hours = Math.floor(diff / hour);
+        diff -= hours * hour;
+        var minutes = Math.floor(diff / minute);
+        diff -= minutes * minute;
+        var seconds = Math.floor(diff / second);
+
+        countdownEl.textContent = days + "j " + hours + "h " + minutes + "m " + seconds + "s";
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      splitEnvelope.addEventListener("click", function () {
+        if (isStarted) return;
+        splitEnvelope.classList.add("opened");
+        startAutoTransitions();
+      });
+    })();
+  </script>
+</body>
+</html>
