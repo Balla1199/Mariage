@@ -150,9 +150,38 @@
 
     .countdown {
       margin: 0 0 16px;
-      font-size: clamp(1.3rem, 3.6vw, 2rem);
-      letter-spacing: 0.04em;
-      font-weight: 600;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(64px, 1fr));
+      gap: 10px;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .time-card {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 10px;
+      padding: 12px 8px;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .time-value {
+      display: block;
+      font-size: clamp(1.1rem, 3.8vw, 1.9rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+    }
+
+    .time-label {
+      display: block;
+      margin-top: 4px;
+      font-size: clamp(0.72rem, 2.2vw, 0.95rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.92;
     }
 
     .romantic-text {
@@ -281,6 +310,14 @@
 
       .seventh-page {
         padding: 20px 14px;
+      }
+
+      .countdown {
+        gap: 8px;
+      }
+
+      .time-card {
+        padding: 10px 6px;
       }
 
     }
@@ -424,7 +461,11 @@
         var diff = target.getTime() - now.getTime();
 
         if (diff <= 0) {
-          countdownEl.textContent = "C'est aujourd'hui.";
+          countdownEl.innerHTML =
+            '<span class="time-card"><span class="time-value">0</span><span class="time-label">Jour</span></span>' +
+            '<span class="time-card"><span class="time-value">0</span><span class="time-label">Heure</span></span>' +
+            '<span class="time-card"><span class="time-value">0</span><span class="time-label">Minute</span></span>' +
+            '<span class="time-card"><span class="time-value">0</span><span class="time-label">Seconde</span></span>';
           return;
         }
 
@@ -441,7 +482,11 @@
         diff -= minutes * minute;
         var seconds = Math.floor(diff / second);
 
-        countdownEl.textContent = days + "j " + hours + "h " + minutes + "m " + seconds + "s";
+        countdownEl.innerHTML =
+          '<span class="time-card"><span class="time-value">' + days + '</span><span class="time-label">Jours</span></span>' +
+          '<span class="time-card"><span class="time-value">' + hours + '</span><span class="time-label">Heures</span></span>' +
+          '<span class="time-card"><span class="time-value">' + minutes + '</span><span class="time-label">Minutes</span></span>' +
+          '<span class="time-card"><span class="time-value">' + seconds + '</span><span class="time-label">Secondes</span></span>';
       }
 
       updateCountdown();
